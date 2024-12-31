@@ -1,3 +1,9 @@
+/***************************************************************/
+/* Programmer: Ziyang Li                                       */        
+/* Date: Dec 31, 2024                                          */        
+/* Purpose: Implementation of Bresenham linear algorithm      */
+/***************************************************************/
+
 #ifndef LINE_FUNCTIONS_H
 #define LINE_FUNCTIONS_H
 
