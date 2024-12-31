@@ -10,6 +10,8 @@ correct directory when you use it.
 #include <fstream>
 using namespace std;
 
+
+//This is the size of the image, modified as needed.
 const int SIZE = 500;  
 
 class Display
