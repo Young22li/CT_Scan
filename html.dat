@@ -1,3 +1,11 @@
+/*-------------------------------------------------
+This file was provided by Prof.Younes Benkarroum
+The goal is to output the image via html
+You need to place the file under the 
+correct directory when you use it.
+-------------------------------------------------*/
+
+
 var tot_com = wid*hig*com; //:total#components
 var u8a     = new Uint8Array( tot_com );
 
