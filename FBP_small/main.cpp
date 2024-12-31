@@ -1,3 +1,9 @@
+// Reconstructed image through the spatial domain
+// Edit By: Ziyang Li
+// Date: 12/31/24
+// Description: This file will Reconstructed image through the spatial domain
+//The main idea is to use convolution
+
 #include <iostream>
 #include "Display.h"
 #include <cmath>
@@ -199,27 +205,17 @@ int main()
 
     reduce(sinogram);
     
-    Display image3(sinogram, "output2");
-
-
+    //Convolution at 1d
     //for(int i = 0; i < n; i++) re(i, sinogram);
     
     //for(int i = 0; i < n; i++)  sp(i);
-
+    
+    //Convolution at 2d
     sp2();
     
     reduce(sino);
     Display imagesss(sino, "output6");
-    /*
-    for(int i = 0; i < n; i++){
-        cout<<sinogram[0][i]<<" ";
-    }
-    cout<<endl<<endl<<endl;
-    for(int i = 0; i < n; i++){
-        cout<<sino[120][i]<<" ";
-    }
-    */
-
+    
     for(int i = 0; i < n; i++) re(i, sino);
 
 
