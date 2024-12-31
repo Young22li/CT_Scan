@@ -1,7 +1,7 @@
-// Rotation image
+// Generate sinogram
 // Edit By: Ziyang Li
-// Date: 10/10/24
-// Description: This file create three shape in one pics and rotate this from 0 - 180
+// Date: 10/13/24
+// Description: This file will convert a image into a sinogram
 
 #include <iostream>
 #include "Display.h"
