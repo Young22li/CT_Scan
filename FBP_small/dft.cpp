@@ -1,3 +1,9 @@
+// Reconstructed image through the frequency domain
+// Edit By: Ziyang Li
+// Date: 12/31/24
+// Description: This file will Reconstructed image through the frequency domain
+
+
 #include <iostream>
 #include "Display.h"
 #include <cmath>
@@ -80,53 +86,8 @@ void rotation(int angle, int (&Pixels)[n][n])
     }
 }
 
-void rotation2(int angle, int (&Pixels)[n][n]){
-    double PI = 3.1415926;
-    double rad = angle * PI / 180.0; 
-    int centerX = n / 2;
-    int centerY = n / 2;
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            tracy[i][j] = 0;
-        }
-    }
 
-    for (int y = 0; y < n; y++) {
-        for (int x = 0; x < n; x++) {
 
-            int transX = x - centerX;
-            int transY = y - centerY;
-            int originalX = static_cast<int>(cos(-rad) * transX - sin(-rad) * transY + centerX);
-            int originalY = static_cast<int>(sin(-rad) * transX + cos(-rad) * transY + centerY);
-
-            if (originalX >= 0 && originalX < n && originalY >= 0 && originalY < n) {
-                tracy[y][x] = Pixels[originalY][originalX];
-            }
-        }
-    }
-
-}
-
-void re(int angle, int (&s)[n][n])
-{
-    int temp[n][n];
-    for (int i = 0; i < n; i++)
-    {
-        for (int j = 0; j < n; j++)
-        {
-            temp[j][i] = s[angle][i];
-        }
-        rotation2(-angle, temp);
-    }
-
-    for (int i = 0; i < n; i++)
-    {
-        for (int j = 0; j < n; j++)
-        {
-            final[i][j] += tracy[i][j];
-        }
-    }
-}
 
 void reduce(int (&s)[n][n])
 {
@@ -149,24 +110,7 @@ void reduce(int (&s)[n][n])
 }
 
 
-void gray2(int (&s)[n][n]) {
-    double alpha = 1.5;
-    int beta = 0;
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            
-            s[i][j] = static_cast<int>(alpha * s[i][j] + beta);
 
-            
-             if (s[i][j] >= 0 && s[i][j] < 30) {
-                s[i][j] += 0;
-            }
-            else if (s[i][j] >= 30 && s[i][j] < 60) s[i][j] += 35;
-            else if (s[i][j] >= 60 && s[i][j] < 100) s[i][j] += 65;
-            else if (s[i][j] >= 100 && s[i][j] < 120) s[i][j] += 30;
-        }
-    }
-}
 
 void dft(int row, vector<double> &real, vector<double> &imag)
 {
@@ -234,102 +178,8 @@ void createFilter(double (&rampFilter)[n])
     }
 }
 
-void createFilter2(double (&rampFilter)[n])
-{
-    double c;
-    for (int i = 0; i < n; i++)
-    {
-        // 
-        c = abs(i - n / 2);
-        double window = 0.54 - 0.46 * cos(2 * M_PI * i / (n - 1));
-        //double window = 0.42 - 0.5 * cos(2 * M_PI * i / (n - 1)) + 0.08 * cos(4 * M_PI * i / (n - 1));
-        //double window = 0.3 * (1 - cos(2 * M_PI * i / (n - 1)));
-
-        //
-        rampFilter[i] = (2.0 * c / n) * window; // 正U型公式
-
-        //rampFilter[i] = n - 2 * c;
-    }
-}
-
-void generateGaussianKernel(vector<vector<double>>& kernel, double sigma, int size) {
-    int halfSize = size / 2;
-    double sum = 0.0;
-    for (int i = -halfSize; i <= halfSize; ++i) {
-        for (int j = -halfSize; j <= halfSize; ++j) {
-            kernel[i + halfSize][j + halfSize] = exp(-(i * i + j * j) / (2 * sigma * sigma));
-            sum += kernel[i + halfSize][j + halfSize];
-        }
-    }
-    // 归一化核
-    for (int i = 0; i < size; ++i) {
-        for (int j = 0; j < size; ++j) {
-            kernel[i][j] /= sum;
-        }
-    }
-}
-
-// 高斯平滑滤波
-void sp2Gaussian() {
-    double sigma = 0.1;
-    int size = 3;
-    vector<vector<double>> kernel(size, vector<double>(size, 0.0));
-    generateGaussianKernel(kernel, sigma, size);
-
-    int halfSize = size / 2;
-
-    for (int row = 0; row < n; row++) {
-        for (int col = 0; col < n; col++) {
-            double sum = 0.0;
-            for (int i = -halfSize; i <= halfSize; i++) {
-                for (int j = -halfSize; j <= halfSize; j++) {
-                    int x = row + i;
-                    int y = col + j;
-                    if (x >= 0 && x < n && y >= 0 && y < n) {
-                        sum += sino[x][y] * kernel[i + halfSize][j + halfSize];
-                    }
-                }
-            }
-            si[row][col] = static_cast<int>(ceil(sum));
-        }
-    }
-}
-
-void sp2() {
-    for (int row = 0; row < n; row++) {
-        for (int col = 0; col < n; col++) {
-            std::vector<int> windowValues;
-
-            // 遍历窗口中的像素
-            for (int i = row - 1; i <= row + 1; i++) {
-                for (int j = col - 1; j <= col + 1; j++) {
-                    // 检查是否在有效范围内
-                    if (i >= 0 && i < n && j >= 0 && j < n) {
-                        windowValues.push_back(sinogram[i][j]);
-                    }
-                }
-            }
-
-            // 对窗口中的像素值排序
-            int sum = accumulate(windowValues.begin(), windowValues.end(), 0);
-
-            // 取中值
-            int median = sum / 9;
-
-            // 设置中值到输出图像
-            sino[row][col] = median;
-        }
-    }
-}
-
 
 void backProject(int (&sinogram)[n][n]) {
-    // // Initialize the reconstructed image to zero
-    // for (int row = 0; row < SIZE; row++) {
-    //     for (int col = 0; col < SIZE; col++) {
-    //         ReconstructedImage[row][col] = 0;
-    //     }
-    // }
     double PI = 3.1415926;
     // Backprojection loop: iterate over angles (0° to 180° counterclockwise)
     for (int angleIndex = 0; angleIndex < n; angleIndex++) {
@@ -355,63 +205,9 @@ void backProject(int (&sinogram)[n][n]) {
 
 }
 
-void createFilter4(double (&rampFilter)[n]) {
-    double fc = 350;  // 截止频率，默认值为 0.5
-    int butterworthOrder = 3; // Butterworth 滤波器阶数，默认值为 3
-
-    for (int i = 0; i < n; i++)
-    {
-        // 计算归一化频率 u
-        //double u = static_cast<double>(i - n / 2) / n;
-        //double u = i / n;
-        double c = abs(i - n / 2);
-
-        // 计算 Ramp 部分
-        //double ramp = 2.0 * abs(i - n / 2) / n;
-
-        // 计算 Sinc 部分，避免 u = 0 时除以零
-        double sinc = sin((M_PI * c)/n);
-
-        // 计算 Butterworth 部分
-        double butterworth = M_PI * sqrt(1.0 + pow(c / (2 * fc), 2 * butterworthOrder));
-
-        // 组合滤波器
-        rampFilter[i] = sinc / butterworth;
-        //rampFilter[i] = sinc;
-        //rampFilter[i] = 1.0;
-    }
-}
-
-void createFilter5(double (&rampFilter)[n])
-{
-    double c;
-    double fc = 350; // 截止频率，默认为 0.5
-    for (int i = 0; i < n; i++)
-    {
-        // 计算 Ramp 滤波器部分
-        c = abs(i - n / 2);
-        double ramp = 2.0 * c / n;
-
-        double window = 0.54 - 0.46 * cos(2 * M_PI * i / (n - 1));
-
-        // 计算归一化频率 u
-        double u = static_cast<double>(i / n);
-        //double u = static_cast<double>(i - n / 2) / n;
-
-        // 计算 Sinc 函数部分，避免除以零
-        double sinc = c == 0 ? 1.0 : sin((M_PI * c)/n) / ((M_PI * c)/n);
-
-        // 组合 Ramp 和 Sinc 滤波器
-        rampFilter[i] = ramp * sinc * window;
-       //rampFilter[i] = 2 * sinc;
-    }
-}
-
 
 int main()
 {
-
-
     for (int row = 0; row < n; row++)
     {
         for (int col = 0; col < n; col++)
@@ -425,7 +221,6 @@ int main()
     circle(88, 88, 20);
     trangle(100, 123, 100, 150, 150);
 
-    // Display image(Pixels, "output1");
 
     for (int i = 0; i < n; i++)
     {
@@ -454,55 +249,19 @@ int main()
         createFilter4(rampFilter);
         
         
-        // for(int j = 0; j < n; j++){
-        //     real[j] *= rampFilter[j];
-        //     imag[j] *= rampFilter[j];
-        // }
+         for(int j = 0; j < n; j++){
+            real[j] *= rampFilter[j];
+             imag[j] *= rampFilter[j];
+         }
         
-        
-        
-
-
-      // vector<double> temp1 = real;
-       //vector<double> temp2 = imag;
-        
-        int mid = n / 2;
-        for (int j = 0; j < mid; j++)
-        {
-             real[mid + j] *= rampFilter[j];
-             imag[mid + j] *= rampFilter[j];
-        }
-        for (int j = 0; j < mid; j++)
-        {
-            real[j] *= rampFilter[mid + j];
-            imag[j] *= rampFilter[mid + j];
-        }
-        
-        
-        
-        
-
+    
         idft(i, real, imag);
     }
 
     reduce(sino);
 
-    Display image1(sino, "output11");
-
-    //sp2Gaussian();
-    //sp2();
-
-    //gray(sino);
-    //gray2(sino);
-
-    //Display image3(si, "output13");
-
-    //for (int i = 0; i < n; i++)
-    //    re(i, sino);
-
     backProject(sino);
     reduce(final);
-    // black();
 
     Display image2(final, "output12");
 
