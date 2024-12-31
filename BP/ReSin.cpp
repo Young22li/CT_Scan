@@ -1,7 +1,9 @@
 // Back-projection
 // Edit By: Ziyang Li
-// Date: 10/18/24
+// Date: 12/31/24
 // Description: This file using back-projection reconstructing from sinogram
+// re function is reconstructed based on the information in each row of the sinogram
+// backprojection function is an optimized version of the bp algorithm. The main idea is based on the reverse derivation of the rotation formula.
 
 #include <iostream>
 #include "Display.h"
@@ -79,33 +81,6 @@ void rotation(int angle, int (&Pixels)[n][n])
             tracy[r][c] = p;
         }
     }
-}
-
-void rotation2(int angle, int (&Pixels)[n][n]){
-    double PI = 3.1415926;
-    double rad = angle * PI / 180.0; 
-    int centerX = n / 2;
-    int centerY = n / 2;
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            tracy[i][j] = 0;
-        }
-    }
-
-    for (int y = 0; y < n; y++) {
-        for (int x = 0; x < n; x++) {
-
-            int transX = x - centerX;
-            int transY = y - centerY;
-            int originalX = static_cast<int>(cos(-rad) * transX - sin(-rad) * transY + centerX);
-            int originalY = static_cast<int>(sin(-rad) * transX + cos(-rad) * transY + centerY);
-
-            if (originalX >= 0 && originalX < n && originalY >= 0 && originalY < n) {
-                tracy[y][x] = Pixels[originalY][originalX];
-            }
-        }
-    }
-
 }
 
 void re(int angle, int (&s)[n][n]){
