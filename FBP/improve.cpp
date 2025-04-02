@@ -315,7 +315,7 @@ void backProject(int (&sinogram)[n][n]) {
         double cosTheta = cos(angle);
         double sinTheta = sin(angle);
 
-        // 遍历重建图片的每个像素点
+        
         for (int x = 0; x < n; x++) {
             for (int y = 0; y < n; y++) {
                 
