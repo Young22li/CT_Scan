@@ -3,6 +3,7 @@
 // Date: 4/5/25
 // Description: This file using Iterative Reconstruction algorithm reconstructing
 
+
 #include <iostream>
 #include "Display.h"
 #include <cmath>
@@ -78,23 +79,6 @@ void rotation(int angle, int (&Pixels)[n][n])
     }
 }
 
-
-// void re(int angle, int (&s)[n][n]){
-//     int temp[n][n];
-//     for(int i = 0; i < n; i++){
-//         for(int j = 0; j < n; j++){
-//             temp[j][i] = s[angle][i];
-//         }
-//         rotation(-angle, temp);
-//     }
-
-//     for(int i = 0; i < n; i++){
-//         for(int j = 0; j < n; j++){
-//             final[i][j] += tracy[i][j];
-//         }
-//     }
-// }
-
 void reduce(int (&s)[n][n])
 {
     int max1 = 0;
@@ -124,12 +108,6 @@ void reduce(int (&s)[n][n])
 
 
 void backProject(int (&sinogram)[n][n], int (&f)[n][n]) {
-    // // Initialize the reconstructed image to zero
-    // for (int row = 0; row < SIZE; row++) {
-    //     for (int col = 0; col < SIZE; col++) {
-    //         ReconstructedImage[row][col] = 0;
-    //     }
-    // }
     double PI = 3.1415926;
     // Backprojection loop: iterate over angles (0° to 180° counterclockwise)
     for (int angleIndex = 0; angleIndex < n; angleIndex++) {
@@ -204,7 +182,7 @@ int main()
     //------------------------------------------------------------------------------------
 
     int num_iterations = 180;
-double prev_error = 1e6;
+    double prev_error = 1e6;
 
 for(int iter = 0; iter < num_iterations; iter++){
     int sinogram2[n][n] = {0};
@@ -250,7 +228,9 @@ for(int iter = 0; iter < num_iterations; iter++){
             }
         }
         Display i3(error, "Sinogram_error_150");
-    // Checking the global error
+    
+    // Checking the global error if error
+    // If the error is approaching 0, then we end the iteration
     double current_error = 0.0;
     for(int i = 0; i < n; i++)
         for(int j = 0; j < n; j++)
